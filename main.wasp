@@ -1,0 +1,11 @@
+route AnalysisDetailRoute { path: "/analysis/:id", to: AnalysisDetailPage }
+page AnalysisDetailPage {
+  component: import AnalysisDetail from "@client/AnalysisDetailPage.tsx",
+  authRequired: true
+}
+
+query getAnalysisDetail {
+  fn: import { getAnalysisDetail } from "@server/queries.js",
+  entities: [AnalysisResult]
+}
+
