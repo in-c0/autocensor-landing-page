@@ -1,4 +1,3 @@
-// AnalyzeResult.tsx
 "use client"
 
 import { useState, useEffect } from "react"
@@ -65,15 +64,26 @@ export default function AnalyzeResult({ isDemo = false }: { isDemo?: boolean }) 
 
   useEffect(() => {
     if (isDemo) {
+      console.log("Using demo data")
       setResult(mockResult)
     } else {
+      console.log("Attempting to retrieve analysis result from sessionStorage")
       // Try to get the analysis result stored in sessionStorage.
       const storedResult = sessionStorage.getItem("analysisResult")
       if (storedResult) {
-        setResult(JSON.parse(storedResult))
-        // Optionally clear the stored result if it's only meant for one-time use:
-        sessionStorage.removeItem("analysisResult")
+        try {
+          const parsedResult = JSON.parse(storedResult)
+          console.log("Retrieved and parsed result:", parsedResult)
+          setResult(parsedResult)
+          // Optionally clear the stored result if it's only meant for one-time use:
+          sessionStorage.removeItem("analysisResult")
+          console.log("Cleared analysisResult from sessionStorage")
+        } catch (err) {
+          console.error("Error parsing stored result:", err)
+          setError("Error parsing the analysis result. Please try uploading a file again.")
+        }
       } else {
+        console.log("No stored result found in sessionStorage")
         setError("No analysis result found. Please try uploading a file again.")
       }
     }

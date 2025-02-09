@@ -1,4 +1,3 @@
-// FileUpload.tsx
 "use client"
 
 import { useState, useCallback } from "react"
@@ -38,6 +37,7 @@ export default function FileUpload() {
     formData.append("file", file)
 
     try {
+      console.log("Sending file to server...")
       const response = await fetch("https://keepr-autocensor.fly.dev/transcribe", {
         method: "POST",
         body: formData,
@@ -49,15 +49,17 @@ export default function FileUpload() {
       }
 
       const result = await response.json()
-      // For this example, we store the analysis result in sessionStorage.
-      // (You might instead use React Context or a global state library.)
-      sessionStorage.setItem("analysisResult", JSON.stringify(result))
+      console.log("Received result from server:", result)
 
-      // Navigate to the analyze page so that it can load the result.
+      // Store the analysis result in sessionStorage
+      sessionStorage.setItem("analysisResult", JSON.stringify(result))
+      console.log("Analysis result stored in sessionStorage")
+
+      // Navigate to the analyze page
       router.push("/analyze")
     } catch (err) {
       console.error("Error processing file:", err)
-      setError("An error occurred while processing the file. Please try again.")
+      setError(`An error occurred while processing the file: ${err.message}`)
     } finally {
       setIsProcessing(false)
     }
